@@ -1,0 +1,14 @@
+# container names:
+DC_NAME_WEB=test-web
+DC_NAME_WEBLEGACY=test-weblegacy
+DC_NAME_MYSQL=test-mysql
+DC_NAME_REDIS=test-redis
+DC_NAME_NETWORK=test-netc
+
+# app settings
+APP_PATH=/var/www/the-site
+APP_HOST=the-site.localhost
+
+# database settings
+MYSQL_USERNAME=captain
+MYSQL_PASSWORD=captainpassword

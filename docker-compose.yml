@@ -1,0 +1,64 @@
+version: '3.7'
+services:
+  web:
+    build:
+      context: ./web
+      args:
+        PHP_VERSION: 7.4
+    image: 'ostapchenko/the-web:7.4'
+    container_name: ${DC_NAME_WEB}
+    volumes:
+      - './www:/var/www'
+      - './web/sites:/etc/apache2/sites-enabled'
+    tty: true
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      - PHP_DISPLAY_ERRORS=0
+    networks:
+      netc: null
+  weblegacy:
+    build:
+      context: ./web
+      args:
+        PHP_VERSION: 5.6
+    image: 'ostapchenko/the-web:5.6'
+    container_name: ${DC_NAME_WEBLEGACY}
+    volumes:
+      - './www:/var/www'
+      - './web/sites-legacy:/etc/apache2/sites-enabled'
+    tty: true
+    ports:
+      - '8081:80'
+    environment:
+      - PHP_DISPLAY_ERRORS=0
+    networks:
+      netc: null
+  mysql:
+    image: 'mysql:5.7'
+    container_name: ${DC_NAME_MYSQL}
+    volumes:
+      - './mysql/data:/var/lib/mysql'
+      - './mysql/conf.d:/etc/mysql/conf.d'
+      - './mysql/restore:/docker-entrypoint-initdb.d'
+    environment:
+      - MYSQL_ROOT_PASSWORD=mayor
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - TZ=America/New_York
+    ports:
+      - '3306:3306'
+    networks:
+      netc: null
+  redis:
+    image: 'redis:latest'
+    container_name: ${DC_NAME_REDIS}
+    volumes:
+      - './redis/data:/data'
+    networks:
+      netc: null
+networks:
+  netc:
+    name: ${DC_NAME_NETWORK}

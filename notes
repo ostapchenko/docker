@@ -1,0 +1,48 @@
+# CMD /usr/sbin/apache2ctl -D FOREGROUND
+ --build-arg 
+
+
+docker network create test-net
+
+docker run \
+    -p 3306:3306 \
+    --name test-mysql \
+    --network test-net \
+    -v /home/a/Dev/code/lampdev/lampdevcon20/mysql/data:/var/lib/mysql \
+    -v /home/a/Dev/code/lampdev/lampdevcon20/mysql/conf.d:/etc/mysql/conf.d \
+    -v /home/a/Dev/code/lampdev/lampdevcon20/mysql/restore:/docker-entrypoint-initdb.d \
+    -e MYSQL_DATABASE=test \
+    -e MYSQL_ROOT_PASSWORD=mayor \
+    -e TZ=America/New_York \
+    --rm \
+    -d \
+    mysql:5.7
+
+docker exec -it test-mysql bash
+
+
+
+docker build \
+    -t ostapchenko/the-web:7.4 \
+    --build-arg PHP_VERSION=7.4 \
+    ./web
+
+docker run \
+    -p 80:80 \
+    -p 443:443 \
+    --name test-web \
+    --network test-net \
+    -v /home/a/Dev/code/lampdev/lampdevcon20/www:/var/www \
+    -v /home/a/Dev/code/lampdev/lampdevcon20/web/sites:/etc/apache2/sites-enabled \
+    -e PHP_DISPLAY_ERRORS=0 \
+    --rm \
+    -d \
+    ostapchenko/the-web:7.4
+
+docker exec -it test-web bash
+docker logs test-web
+
+docker network inspect test-net
+
+
+ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

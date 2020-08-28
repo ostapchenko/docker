@@ -1,0 +1,13 @@
+/mysql/data/*
+/mysql/restore/*
+/redis/data/*
+/web/sites/*
+/web/sites-legacy/*
+/www/*
+!/www/default
+/www/default/*
+!/www/default/phpinfo.php
+
+*.env
+!*.gitkeep
+!*.htaccess
